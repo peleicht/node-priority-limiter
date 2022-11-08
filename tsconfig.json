@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"declaration": true,
+		"strict": true,
+		"allowSyntheticDefaultImports": true,
+		"outDir": "dist"
+	},
+	"include": ["index.ts"],
+	"exclude": ["node_modules, dist"]
+}
