@@ -10,7 +10,7 @@ Super simple promise-based Rate Limiter:
 ## Installation
 
 ```shell
-npm install priority-queue --save
+npm install priority-limiter --save
 ```
 
 ## Full Usage
@@ -20,7 +20,7 @@ Simply import, then create a new Limiter Instance. The first parameter describes
 For example, allow 5 requests per 10 seconds:
 
 ```javascript
-import Limiter from "priority-queue";
+import Limiter from "priority-limiter";
 
 const limiter = new Limiter(5, 10);
 
