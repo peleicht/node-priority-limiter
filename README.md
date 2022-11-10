@@ -49,6 +49,30 @@ try {
 }
 ```
 
-### License
+# Documentation
+
+## new Limiter(request_number, per_seconds)
+
+- `request_number` {Number} How many elements will resolve per seconds_number.
+- `per_seconds` {Number} How long the timeframe for request_number is in seconds. Defaults to 60.
+
+Creates a new Limiter Instance.
+
+## awaitTurn([priority, timeout])
+
+- `priority` {Number} elements with higher priority will resolve before elements with lower priority. Defaults to 0.
+- `timeout` {Number} reject if element waits for longer than this many seconds. Defaults to 0 (never rejects).
+
+Resolves once ready. Use `await` to wait until you can continue.
+
+## getLength()
+
+Gets the current queue length, i.e. how many calls to `awaitTurn()` have not been resolved yet.
+
+## getUsedResolves()
+
+Get how many calls to `awaitTurn()` have already been resolved within the last per_seconds seconds (thus another `request_number - getUsedResolves()` calls can be made right now).
+
+## License
 
 MIT

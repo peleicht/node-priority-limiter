@@ -123,7 +123,7 @@ export default class Limiter {
 	}
 
 	/**
-	 * Get total Limiter length.
+	 * Gets the current queue length, i.e. how many calls to awaitTurn() have not resolved yet.
 	 */
 	getLength() {
 		let length = 0;
