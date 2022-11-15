@@ -143,3 +143,5 @@ export default class Limiter {
 		return this.used_resolves;
 	}
 }
+
+module.exports = Limiter;
