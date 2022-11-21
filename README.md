@@ -2,7 +2,7 @@
 
 Super simple promise-based Rate Limiter:
 
-- comes in at 10.617 Bytes and Zero Dependencies
+- comes in at 8.452 Bytes and Zero Dependencies
 - fully typed
 - maintains in-order execution and supports priorities
 - constant O(1) runtime, no matter the queue length or priorities
@@ -13,7 +13,7 @@ Super simple promise-based Rate Limiter:
 npm install priority-limiter --save
 ```
 
-## Full Usage
+## Usage
 
 Simply import, then create a new Limiter Instance. The first parameter describes how many request are allowed within the timeframe of the second paramter (in seconds).
 

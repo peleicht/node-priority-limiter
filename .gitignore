@@ -2,3 +2,5 @@
 *.code*
 node_modules
 /dist
+*.tgz
+package
