@@ -91,7 +91,7 @@ export default class Limiter {
 
 	private doNextResolve() {
 		this.used_resolves -= 1;
-		if (this.getLength() != 0) {
+		if (!this.isEmpty()) {
 			//resolve next highest priority element
 			const queue = this.queues[this.highest_priority!];
 			const element = queue.elements[queue.head];
@@ -106,9 +106,8 @@ export default class Limiter {
 			return;
 		} else {
 			if (this.used_resolves <= 0) return;
-			const _this = this;
-			setTimeout(function () {
-				if (_this.used_resolves > 0) return _this.doNextResolve();
+			setTimeout(() => {
+				if (this.used_resolves > 0) return this.doNextResolve();
 			}, this.per_seconds * 1000);
 		}
 	}
@@ -140,6 +139,19 @@ export default class Limiter {
 		}
 
 		return length;
+	}
+
+	/**
+	 * Checks whether the current queue is empty, i.e. if there are no calls to awaitTurn() that have not been resolved yet.
+	 */
+	isEmpty() {
+		const priorities = Object.keys(this.queues);
+		for (let p of priorities) {
+			const queue = this.queues[p];
+			if (queue.tail != queue.head) return false;
+		}
+
+		return true;
 	}
 
 	/**

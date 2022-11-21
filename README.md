@@ -69,6 +69,10 @@ Resolves once ready. Use `await` to wait until you can continue.
 
 Gets the current queue length, i.e. how many calls to `awaitTurn()` have not been resolved yet.
 
+## isEmpty()
+
+Checks whether the queue is empty, i.e. if there are no calls to `awaitTurn()` that have not been resolved yet.
+
 ## getUsedResolves()
 
 Get how many calls to `awaitTurn()` have already been resolved within the last per_seconds seconds (thus another `request_number - getUsedResolves()` calls can be made right now).
