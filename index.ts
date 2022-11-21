@@ -104,7 +104,13 @@ export default class Limiter {
 				this.highest_priority = this.getHighestPriority();
 			}
 			return;
-		} else if (this.used_resolves > 0) setTimeout(() => this.doNextResolve(), this.per_seconds * 1000);
+		} else {
+			if (this.used_resolves <= 0) return;
+			const _this = this;
+			setTimeout(function () {
+				if (_this.used_resolves > 0) return _this.doNextResolve();
+			}, this.per_seconds * 1000);
+		}
 	}
 
 	private getHighestPriority() {
