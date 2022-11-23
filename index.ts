@@ -103,12 +103,6 @@ export default class Limiter {
 				delete this.queues[this.highest_priority!]; //delete empty queue
 				this.highest_priority = this.getHighestPriority();
 			}
-			return;
-		} else {
-			if (this.used_resolves <= 0) return;
-			setTimeout(() => {
-				if (this.used_resolves > 0) return this.doNextResolve();
-			}, this.per_seconds * 1000);
 		}
 	}
 
