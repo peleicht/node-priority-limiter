@@ -1,13 +1,14 @@
+interface Queue {
+	head: number;
+	tail: number;
+	elements: {
+		[key: string]: Function;
+	};
+}
+
 export default class Limiter {
 	private queues: {
-		[key: string]: {
-			//priority number
-			head: number;
-			tail: number;
-			elements: {
-				[key: string]: Function; //limiter elements
-			};
-		};
+		[key: string]: Queue;
 	};
 
 	private used_resolves: number;
@@ -68,9 +69,20 @@ export default class Limiter {
 			setTimeout(() => {
 				if (queue.elements[pos]) {
 					delete queue.elements[pos];
+
+					//move each element up to fill "hole" left by timed out element
+					let el: Function | undefined = undefined;
+					for (let i = queue.head; i < queue.tail; i++) {
+						let next_el = queue.elements[i];
+						if (el) queue.elements[i] = el;
+						if (next_el) el = next_el;
+						else break;
+					}
+
+					delete queue.elements[queue.head];
 					queue.head++;
 
-					if (Object.keys(queue.elements).length == 0) {
+					if (queue.head == queue.tail) {
 						delete this.queues[priority]; //delete empty queue
 						if (priority == this.highest_priority) this.highest_priority = this.getHighestPriority();
 					}
@@ -81,8 +93,8 @@ export default class Limiter {
 	}
 
 	private resolve(res: Function) {
-		this.used_resolves += 1;
 		res();
+		this.used_resolves += 1;
 
 		setTimeout(() => {
 			this.doNextResolve();
@@ -99,7 +111,7 @@ export default class Limiter {
 			delete queue.elements[queue.head];
 			queue.head++;
 
-			if (Object.keys(queue.elements).length == 0) {
+			if (queue.head == queue.tail) {
 				delete this.queues[this.highest_priority!]; //delete empty queue
 				this.highest_priority = this.getHighestPriority();
 			}
@@ -113,7 +125,10 @@ export default class Limiter {
 			const p = Number(string_p);
 			const queue = this.queues[p];
 
-			if (queue.head == queue.tail) delete this.queues[p]; //delete empty queue
+			if (queue.head == queue.tail) {
+				delete this.queues[p]; //delete empty queue
+				continue;
+			}
 
 			if (highest_priority === undefined || highest_priority < p) highest_priority = p;
 		}
@@ -155,5 +170,4 @@ export default class Limiter {
 		return this.used_resolves;
 	}
 }
-
 module.exports = Limiter;
