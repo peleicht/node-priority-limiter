@@ -2,7 +2,7 @@
 
 Super simple promise-based Rate Limiter:
 
-- comes in at 8.577 Bytes and Zero Dependencies
+- comes in at 9.632 Bytes and Zero Dependencies
 - fully typed
 - maintains in-order execution and supports priorities
 - constant O(1) runtime, no matter the queue length or priorities
@@ -76,6 +76,10 @@ Checks whether the queue is empty, i.e. if there are no calls to `awaitTurn()` t
 ## getUsedResolves()
 
 Get how many calls to `awaitTurn()` have already been resolved within the last per_seconds seconds (thus another `request_number - getUsedResolves()` calls can be made right now).
+
+## getTimeTillNextResolve()
+
+Get how long it will be until the next call to `awaitTurn()` will resolve in seconds.
 
 ## License
 

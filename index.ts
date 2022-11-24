@@ -14,6 +14,9 @@ export default class Limiter {
 	private used_resolves: number;
 	private highest_priority: number | undefined;
 
+	private resolve_timers: { [key: string]: number }; //keep track of all timers so we know when next one is done
+	private nex_resolve: number;
+
 	max_resolves: number;
 	per_seconds: number;
 
@@ -26,6 +29,9 @@ export default class Limiter {
 		this.queues = {};
 		this.used_resolves = 0;
 		this.highest_priority = undefined;
+
+		this.resolve_timers = {};
+		this.nex_resolve = 0;
 
 		this.max_resolves = request_number;
 		this.per_seconds = per_seconds;
@@ -66,7 +72,10 @@ export default class Limiter {
 
 		//set timeout
 		if (timeout != 0) {
-			setTimeout(() => {
+			let timer: NodeJS.Timeout;
+			timer = setTimeout(() => {
+				delete this.resolve_timers[String(timer)];
+
 				if (queue.elements[pos]) {
 					delete queue.elements[pos];
 
@@ -89,6 +98,8 @@ export default class Limiter {
 					rej("Limiter timed out.");
 				}
 			}, timeout * 1000);
+
+			this.resolve_timers[String(timer)] = Date.now() + timeout * 1000;
 		}
 	}
 
@@ -96,9 +107,13 @@ export default class Limiter {
 		res();
 		this.used_resolves += 1;
 
-		setTimeout(() => {
+		let timer: NodeJS.Timeout;
+		timer = setTimeout(() => {
+			delete this.resolve_timers[String(timer)];
 			this.doNextResolve();
 		}, this.per_seconds * 1000);
+
+		this.resolve_timers[String(timer)] = Date.now() + this.per_seconds * 1000;
 	}
 
 	private doNextResolve() {
@@ -137,7 +152,7 @@ export default class Limiter {
 	}
 
 	/**
-	 * Gets the current queue length, i.e. how many calls to awaitTurn() have not resolved yet.
+	 * Gets the current queue length, i.e. how many calls to `awaitTurn()` have not resolved yet.
 	 */
 	getLength() {
 		let length = 0;
@@ -151,7 +166,7 @@ export default class Limiter {
 	}
 
 	/**
-	 * Checks whether the current queue is empty, i.e. if there are no calls to awaitTurn() that have not been resolved yet.
+	 * Checks whether the current queue is empty, i.e. if there are no calls to `awaitTurn()` that have not been resolved yet.
 	 */
 	isEmpty() {
 		const priorities = Object.keys(this.queues);
@@ -164,10 +179,26 @@ export default class Limiter {
 	}
 
 	/**
-	 * Get how many elements have already been resolved within the last per_seconds seconds.
+	 * Get how many calls to `awaitTurn()` have already been resolved within the last per_seconds seconds
+	 * (thus another `request_number - getUsedResolves()` calls can be made right now).
 	 */
 	getUsedResolves() {
 		return this.used_resolves;
+	}
+
+	/**
+	 * Get how long it will be until the next call to `awaitTurn()` will resolve in seconds (thus calling `awaitTurn()` in x seconds will resolve it instantly).
+	 */
+	getTimeTillNextResolve() {
+		const times = Object.values(this.resolve_timers);
+		let fastest_timeout: number | undefined = undefined;
+		for (let time of times) {
+			if (fastest_timeout === undefined || time < fastest_timeout) fastest_timeout = time;
+		}
+
+		const now = Date.now();
+		if (!fastest_timeout || fastest_timeout <= now) return 0;
+		return (fastest_timeout - now) / 1000;
 	}
 }
 module.exports = Limiter;
