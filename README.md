@@ -33,7 +33,7 @@ const limiter = new Limiter(5, 10);
 })();
 ```
 
-The default priority is 0. Higher priorities will execute before lower ones. Requests with the same priority are resolve in-order of function calling.
+The default priority is 0. Higher priorities will execute before lower ones. Requests with the same priority are resolved in-order of function calling.
 
 ```javascript
 await limiter.awaitTurn(1); //priority 1, will execute before default priority 0.
