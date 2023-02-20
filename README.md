@@ -2,7 +2,7 @@
 
 Super simple promise-based Rate Limiter:
 
-- comes in at 9.632 Bytes and Zero Dependencies
+- comes in at 9.632 bytes and zero dependencies
 - fully typed
 - maintains in-order execution and supports priorities
 - constant O(1) runtime, no matter the queue length or priorities
@@ -53,15 +53,15 @@ try {
 
 ## new Limiter(request_number, per_seconds)
 
-- `request_number` {Number} How many elements will resolve per seconds_number.
-- `per_seconds` {Number} How long the timeframe for request_number is in seconds. Defaults to 60.
+- `request_number` {Number} How many elements will resolve per _seconds_number_ seconds.
+- `per_seconds` {Number} How long the timeframe for _request_number_ is in seconds. Defaults to 60.
 
 Creates a new Limiter Instance.
 
 ## awaitTurn([priority, timeout])
 
-- `priority` {Number} elements with higher priority will resolve before elements with lower priority. Defaults to 0.
-- `timeout` {Number} reject if element waits for longer than this many seconds. Defaults to 0 (never rejects).
+- `priority` {Number} Elements with higher priority will resolve before elements with lower priority. Defaults to 0.
+- `timeout` {Number} Reject if element waits for longer than this many seconds. Defaults to 0 (never rejects).
 
 Resolves once ready. Use `await` to wait until you can continue.
 
@@ -75,7 +75,7 @@ Checks whether the queue is empty, i.e. if there are no calls to `awaitTurn()` t
 
 ## getUsedResolves()
 
-Get how many calls to `awaitTurn()` have already been resolved within the last per_seconds seconds (thus another `request_number - getUsedResolves()` calls can be made right now).
+Get how many calls to `awaitTurn()` have already been resolved within the last _per_seconds_ seconds (thus another `request_number - getUsedResolves()` calls can be made right now).
 
 ## getTimeTillNextResolve()
 
