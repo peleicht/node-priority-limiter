@@ -2,7 +2,7 @@ interface Queue {
 	head: number;
 	tail: number;
 	elements: {
-		[key: string]: Function;
+		[key: string]: () => void;
 	};
 }
 
@@ -15,7 +15,6 @@ export default class Limiter {
 	private highest_priority: number | undefined;
 
 	private resolve_timers: { [key: string]: number }; //keep track of all timers so we know when next one is done
-	private nex_resolve: number;
 
 	max_resolves: number;
 	per_seconds: number;
@@ -31,7 +30,6 @@ export default class Limiter {
 		this.highest_priority = undefined;
 
 		this.resolve_timers = {};
-		this.nex_resolve = 0;
 
 		this.max_resolves = request_number;
 		this.per_seconds = per_seconds;
@@ -42,7 +40,7 @@ export default class Limiter {
 	 * @param priority elements with higher priority will resolve before elements with lower priority. Defaults to 0.
 	 * @param timeout reject if element waits for longer than this many seconds. Defaults to 0 (never rejects).
 	 */
-	awaitTurn(priority = 0, timeout = 0): Promise<any> {
+	awaitTurn(priority = 0, timeout = 0): Promise<void> {
 		return new Promise((res, rej) => {
 			if (this.used_resolves < this.max_resolves) {
 				this.resolve(res);
@@ -52,7 +50,7 @@ export default class Limiter {
 		});
 	}
 
-	private push(res: Function, rej: Function, priority: number, timeout: number) {
+	private push(res: () => void, rej: (reason: string) => void, priority: number, timeout: number) {
 		//create queue for given priority if none exists
 		if (!this.queues[priority]) {
 			if (this.highest_priority === undefined || priority > this.highest_priority) this.highest_priority = priority;
@@ -80,7 +78,7 @@ export default class Limiter {
 					delete queue.elements[pos];
 
 					//move each element up to fill "hole" left by timed out element
-					let el: Function | undefined = undefined;
+					let el: (() => void) | undefined = undefined;
 					for (let i = queue.head; i < queue.tail; i++) {
 						let next_el = queue.elements[i];
 						if (el) queue.elements[i] = el;
@@ -103,7 +101,7 @@ export default class Limiter {
 		}
 	}
 
-	private resolve(res: Function) {
+	private resolve(res: () => void) {
 		res();
 		this.used_resolves += 1;
 
