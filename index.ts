@@ -188,6 +188,8 @@ export default class Limiter {
 	 * Get how long it will be until the next call to `awaitTurn()` will resolve in seconds (thus calling `awaitTurn()` in x seconds will resolve it instantly).
 	 */
 	getTimeTillNextResolve() {
+		if (this.used_resolves < this.max_resolves) return 0;
+
 		const times = Object.values(this.resolve_timers);
 		let fastest_timeout: number | undefined = undefined;
 		for (let time of times) {
