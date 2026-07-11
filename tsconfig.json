@@ -1,11 +1,18 @@
 {
 	"compilerOptions": {
-		"target": "ES2017",
-		"module": "commonjs",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "es2022",
+		"module": "NodeNext",
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"moduleDetection": "force",
+		"isolatedModules": true,
 		"declaration": true,
 		"strict": true,
 		"allowSyntheticDefaultImports": true,
-		"outDir": "dist"
+		"outDir": "dist",
+		"types": ["node"]
 	},
 	"include": ["index.ts"],
 	"exclude": ["node_modules, dist"]

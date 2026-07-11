@@ -1,6 +1,7 @@
 {
 	"name": "priority-limiter",
-	"version": "1.2.3",
+	"type": "module",
+	"version": "2.0.1",
 	"description": "super-simple promise based Limiter",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -27,8 +28,8 @@
 	"license": "MIT",
 	"homepage": "https://github.com/peleicht/node-priority-limiter",
 	"devDependencies": {
-		"@types/node": "^18.14.0",
-		"prettier": "^2.7.1",
-		"typescript": "^4.8.4"
+		"@types/node": "^26.1.1",
+		"prettier": "^3.9.5",
+		"typescript": "^7.0.2"
 	}
 }

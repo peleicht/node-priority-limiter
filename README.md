@@ -2,7 +2,7 @@
 
 Super simple promise-based Rate Limiter:
 
-- comes in at 9.058 bytes and zero dependencies
+- comes in at 11 kB and zero dependencies
 - fully typed
 - maintains in-order execution and supports priorities
 - constant O(1) runtime, no matter the queue length or priorities
